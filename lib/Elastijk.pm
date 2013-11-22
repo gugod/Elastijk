@@ -6,7 +6,7 @@ use JSON ();
 use URI::Escape qw(uri_escape);
 use Hijk;
 
-sub _build_hijk_request {
+sub _build_hijk_request_args {
     my $args = $_[0];
     my ($path, $qs);
     $path = "/". join("/", grep { defined } delete @{$args}{qw(index type command)});
@@ -24,7 +24,7 @@ sub _build_hijk_request {
 }
 
 sub request {
-    return JSON::decode_json Hijk::request( _build_hijk_request($_[0]) );
+    return JSON::decode_json Hijk::request( _build_hijk_request_args($_[0]) );
 }
 
 1;
