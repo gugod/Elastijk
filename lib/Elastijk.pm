@@ -25,7 +25,8 @@ sub _build_hijk_request_args {
 }
 
 sub request {
-    return JSON::decode_json Hijk::request( _build_hijk_request_args($_[0]) );
+    my $res = Hijk::request( _build_hijk_request_args($_[0]) );
+    return JSON::decode_json($res->{body});
 }
 
 1;

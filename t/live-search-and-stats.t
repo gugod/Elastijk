@@ -4,11 +4,6 @@ use strict;
 use Test::More;
 use Elastijk;
 
-unless ($ENV{TEST_LIVE}) {
-    plan skip_all => "Enable live testing by setting env: TEST_LIVE=1";
-}
-
-my $res;
 my @base_arg = (
     host => "127.0.0.1",
     port => "9200",
@@ -42,7 +37,9 @@ for (@tests) {
         "the arg hash for Hijk::request looks correct."
     );
 
-    $res = Elastijk::request($args);
-    is ref($res), 'HASH', substr(JSON::encode_json($res), 0, 60)."...";
+    if ($ENV{TEST_LIVE}) {
+        my $res = Elastijk::request($args);
+        is ref($res), 'HASH', substr(JSON::encode_json($res), 0, 60)."...";
+    }
 }
 done_testing;
