@@ -6,13 +6,12 @@ perl:
   - "5.14"
 
 before_install:
-  cpanm -n Minilla
+  cpanm -n Minilla Devel::Cover::Report::Coveralls
 script:
-  minil test
+  minil build && perl ./Build.PL && ./Build build && cover -test -report coveralls
 
 notifications:
   irc:
     channels:
       - "irc.freenode.org#chupei.pm"
     use_notice: true
-
