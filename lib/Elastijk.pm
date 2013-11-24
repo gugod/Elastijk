@@ -9,18 +9,23 @@ use Hijk;
 
 sub _build_hijk_request_args {
     my $args = $_[0];
-    my ($path, $qs);
+    my ($path, $qs, $body);
     $path = "/". join("/", grep { defined } delete @{$args}{qw(index type command)});
     if (my $uri_param = $args->{uri_param}) {
         $qs =  join('&', map { uri_escape($_) . "=" . uri_escape($uri_param->{$_}) } keys %$uri_param);
     }
+
+    $body = $args->{body};
+    $body = JSON::encode_json($body)
+        if ref($body);
+
     return {
         method => $args->{method} || 'GET',
         host   => $args->{host}   || 'localhost',
         port   => $args->{port}   || '9200',
         $path ? ( path   => $path ):(),
         $qs   ? ( query_string => $qs ):(),
-        $args->{body} ? ( body => JSON::encode_json($args->{body}) ) : (),
+        $body ? ( body => $body ):()
     }
 }
 

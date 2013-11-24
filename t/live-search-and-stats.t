@@ -23,6 +23,14 @@ my @tests = (
           query_string => "search_type=count",
           body => '{"query":{"match_all":{}}}' }
     ],
+    [
+        { command => "_search",
+          uri_param => { search_type => "count" },
+          body => '{"query":{"match_all":{}}}' },
+        { path => "/_search",
+          query_string => "search_type=count",
+          body => '{"query":{"match_all":{}}}' }
+    ],
 );
 
 for (@tests) {
