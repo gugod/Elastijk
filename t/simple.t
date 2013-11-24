@@ -2,8 +2,11 @@
 
 use strict;
 use Test::More;
-
 use Elastijk;
+
+unless ($ENV{TEST_LIVE}) {
+    plan skip_all => "Enable live testing by setting env: TEST_LIVE=1";
+}
 
 my $res;
 my @base_arg = (
