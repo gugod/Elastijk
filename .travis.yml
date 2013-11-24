@@ -6,7 +6,11 @@ perl:
   - "5.14"
 
 before_install:
-  cpanm -n Minilla Devel::Cover::Report::Coveralls
+  - cpanm -n Minilla Devel::Cover::Report::Coveralls
+  - curl --silent -L http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.0.tar.gz | tar -xz
+  - ./elasticsearch-0.90.0/bin/elasticsearch
+  - export TEST_LIVE=1
+
 script:
   minil build && perl ./Build.PL && ./Build build && cover -test -report coveralls
 
