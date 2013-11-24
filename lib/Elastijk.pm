@@ -1,6 +1,7 @@
 package Elastijk;
 use strict;
 use warnings;
+our $VERSION = "0.01";
 
 use JSON ();
 use URI::Escape qw(uri_escape);
@@ -28,3 +29,28 @@ sub request {
 }
 
 1;
+
+=encoding utf-8
+
+=head1 NAME
+
+Elastijk - A specialized ElasticSearch client.
+
+=head1 SYNOPSIS
+
+    use Elastijk;
+
+=head1 DESCRIPTION
+
+=head1 LICENSE
+
+Copyright (C) Kang-min Liu.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 AUTHOR
+
+Kang-min Liu E<lt>gugod@gugod.orgE<gt>
+
+=cut
