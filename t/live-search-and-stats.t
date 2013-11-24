@@ -46,7 +46,7 @@ for (@tests) {
     );
 
     if ($ENV{TEST_LIVE}) {
-        my $res = Elastijk::request($args);
+        my ($status, $res) = Elastijk::request($args);
         is ref($res), 'HASH', substr(JSON::encode_json($res), 0, 60)."...";
     }
 }

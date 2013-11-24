@@ -31,7 +31,7 @@ sub _build_hijk_request_args {
 
 sub request {
     my $res = Hijk::request( _build_hijk_request_args($_[0]) );
-    return JSON::decode_json($res->{body});
+    return $res->{status}, ($res->{body} && substr($res->{body},0,1) eq "{") ? JSON::decode_json($res->{body}) : undef;
 }
 
 1;
