@@ -10,7 +10,7 @@ use Hijk;
 sub _build_hijk_request_args {
     my $args = $_[0];
     my ($path, $qs, $body);
-    $path = "/". join("/", grep { defined } delete @{$args}{qw(index type command)});
+    $path = "/". join("/", grep { defined } @{$args}{qw(index type command)});
     if (my $uri_param = $args->{uri_param}) {
         $qs =  join('&', map { uri_escape($_) . "=" . uri_escape($uri_param->{$_}) } keys %$uri_param);
     }
