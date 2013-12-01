@@ -50,6 +50,11 @@ sub request_raw {
     return $res->{status}, $res->{body};
 }
 
+sub new {
+    shift;
+    require Elastijk::oo;
+    return Elastijk::oo->new(@_);
+}
 
 1;
 
@@ -89,6 +94,56 @@ Elastijk - A specialized ElasticSearch client.
 Elastijk is a ElasticSearch client library. It uses L<Hijk>, a HTTP client that
 implements a tiny subset of HTTP/1.1 that makes it just enough to talk to
 ElasticSearch via HTTP.
+
+Elastijk provided low-level functions that are almost identical as using HTTP
+client, and a object-oriented sugar-layer to make it easier to use. The following
+documentation describe the object-oriented uses first, then the functions.
+
+=head2 OBJECT PROPERTIES
+
+An Elastijk object does not use object frameworks, but just follow the perl
+convention. Object is a blessed hash, while all key-value pairs in the hash are
+the properties. Users could break the pacaking and modify those values, but it
+is fine. All key-value pairs are shallow-copied from `new` method:
+
+    my $es = Elastijk->new(
+        host => "es1.example.com",
+        port => "9200"
+    );
+
+Here's a full list of key-value pairs that are consumed:
+
+=over 4
+
+=item host => Str "localhost"
+
+=item port => Str "9200"
+
+=item index => Str (optional)
+
+=item type => Str (optional)
+
+=back
+
+The values for C<index> and C<type> act like a "default" value and they are only
+used in methods that could use them. Those methods should also takes new
+values for index or type and overrieds the defaults.
+
+=head1 OBJECT METHODS
+
+=head2 exists( index => Str )
+
+Check if the given index exists.
+
+See also L<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-exists.html>
+
+=head2 exists( index => Str, type => Str )
+
+Check if the given type exists.
+
+See also L<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>
+
+=head2 delete
 
 =head1 FUNCTIONS
 
