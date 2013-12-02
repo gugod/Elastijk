@@ -14,7 +14,60 @@ sub new {
 };
 
 sub index {
+    my ($self, $type, $doc) = @_;
+
+    if (ref($doc) eq 'ARRAY') {
+        my $body = "";
+        for my $d (@$doc) {
+            if (ref($d) eq 'ARRAY') {
+                $body .= $Elastijk::JSON->encode($d->[0]) . "\n"
+                    . $Elastijk::JSON->encode($d->[1]) . "\n";
+            }
+            elsif (ref($d) eq 'HASH') {
+                $body .= '{"index":{}}' . "\n"
+                    . $Elastijk::JSON->encode($d) . "\n";
+            }
+        }
+
+        my ($status, $res) = Elastijk::request_raw({
+            host => $self->{host},
+            port => $self->{port},
+            method => "POST",
+            index => $self->{index},
+            type => $type,
+            command => "_bulk",
+            body => $body,
+        });
+        $res = $Elastijk::JSON->decode($res);
+        return $res;
+    }
+    elsif (ref($doc) eq 'HASH') {
+        my ($status, $res) = Elastijk::request({
+            host => $self->{host},
+            port => $self->{port},
+            method => "POST",
+            index => $self->{index},
+            type  => $type,
+            body => $doc,
+        });
+        return $res;
+    }
+
+    return undef;
+}
+
+sub get {
     my ($self, %spec) = @_;
+    my $id = $spec{id};
+    my ($status, $res) = Elastijk::request({
+        host => $self->{host},
+        port => $self->{port},
+        method => "GET",
+        index => $spec{index} || $self->{index},
+        type => $spec{type} || $self->{type},
+        command => $id
+    });
+    return $res;
 }
 
 sub exists {
