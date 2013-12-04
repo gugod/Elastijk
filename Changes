@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.02 2013-12-04T21:37:32Z
+
   - Adding some simple oo interface.
   - oo: create/delete index, get document..
 
