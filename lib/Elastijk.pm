@@ -92,8 +92,8 @@ Elastijk - A specialized ElasticSearch client.
 =head1 DESCRIPTION
 
 Elastijk is a ElasticSearch client library. It uses L<Hijk>, a HTTP client that
-implements a tiny subset of HTTP/1.1 that makes it just enough to talk to
-ElasticSearch via HTTP.
+implements a tiny subset of HTTP/1.1 just enough to talk to ElasticSearch via
+HTTP.
 
 Elastijk provided low-level functions that are almost identical as using HTTP
 client, and a object-oriented sugar-layer to make it easier to use. The following
@@ -113,17 +113,10 @@ is fine. All key-value pairs are shallow-copied from `new` method:
 
 Here's a full list of key-value pairs that are consumed:
 
-=over 4
-
-=item host => Str "localhost"
-
-=item port => Str "9200"
-
-=item index => Str (optional)
-
-=item type => Str (optional)
-
-=back
+    host  => Str "localhost"
+    port  => Str "9200"
+    index => Str (optional)
+    type  => Str (optional)
 
 The values for C<index> and C<type> act like a "default" value and they are only
 used in methods that could use them. Those methods should also takes new
