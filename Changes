@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+- Add "search" and "uri_search" method.
+
 0.02 2013-12-04T21:37:32Z
 
   - Adding some simple oo interface.
