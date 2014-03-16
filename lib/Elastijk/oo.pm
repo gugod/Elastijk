@@ -121,5 +121,50 @@ sub delete {
     return $res;
 }
 
+sub search {
+    my $self = shift;
+    my %args = @_;
+    my $search_type = delete $args{search_type};
+    my ($status, $body) = Elastijk::request({
+        method => "GET",
+        host => $self->{host},
+        port => $self->{port},
+        $self->{index} ? ( index => $self->{index} ) : (),
+        $self->{type}  ? ( type  => $self->{type}  ) : (),
+
+        command => "_search",
+        $search_type ? (
+            uri_param => { search_type => $search_type }
+        ) : (),
+
+        body => \%args,
+    });
+
+    return {
+        status => $status,
+        body => $body,
+    }
+}
+
+
+sub uri_search {
+    my ($self, %args) = @_;
+    my ($status, $body) = Elastijk::request({
+        method => "GET",
+        host => $self->{host},
+        port => $self->{port},
+        $self->{index} ? ( index => $self->{index} ) : (),
+        $self->{type}  ? ( type  => $self->{type}  ) : (),
+
+        command => "_search",
+        uri_param => \%args,
+    });
+
+    return {
+        status => $status,
+        body => $body,
+    }
+}
+
 
 1;
