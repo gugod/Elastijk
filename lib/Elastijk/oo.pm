@@ -13,6 +13,18 @@ sub new {
     *Elastijk::new = *Elastijk::oo::new;
 };
 
+sub request {
+    my ($self, %args) = @_;
+    $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type);
+    return Elastijk::request(\%args);
+}
+
+sub request_raw {
+    my ($self, %args) = @_;
+    $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type);
+    return Elastijk::request_raw(\%args);
+}
+
 sub index {
     my ($self, $type, $doc) = @_;
 
@@ -29,27 +41,20 @@ sub index {
             }
         }
 
-        my ($status, $res) = Elastijk::request_raw({
-            host => $self->{host},
-            port => $self->{port},
+        my ($status, $res) = $self->request_raw(
             method => "POST",
-            index => $self->{index},
             type => $type,
             command => "_bulk",
             body => $body,
-        });
+        );
         $res = $Elastijk::JSON->decode($res);
         return $res;
-    }
-    elsif (ref($doc) eq 'HASH') {
-        my ($status, $res) = Elastijk::request({
-            host => $self->{host},
-            port => $self->{port},
+    } elsif (ref($doc) eq 'HASH') {
+        my ($status, $res) = $self->request(
             method => "POST",
-            index => $self->{index},
             type  => $type,
             body => $doc,
-        });
+        );
         return $res;
     }
 
@@ -58,15 +63,12 @@ sub index {
 
 sub get {
     my ($self, %spec) = @_;
-    my $id = $spec{id};
-    my ($status, $res) = Elastijk::request({
-        host => $self->{host},
-        port => $self->{port},
+    my ($status, $res) = $self->request(
         method => "GET",
-        index => $spec{index} || $self->{index},
-        type => $spec{type} || $self->{type},
-        command => $id
-    });
+        exists($spec{index}) ? ( index => $spec{index} ) : (),
+        exists($spec{type})  ? ( type  => $spec{type}  ) : (),
+        command => $spec{id},
+    );
     return $res;
 }
 
@@ -74,15 +76,11 @@ sub exists {
     my ($self, %spec) = @_;
 
     if ( !ref($spec{index}) ) {
-        my ($status, undef) = Elastijk::request({
-            host => $self->{host},
-            port => $self->{port},
+        my ($status, undef) = $self->request(
             method => "HEAD",
-            index => $spec{index},
-            !$spec{type} ?() : (
-                type => $spec{type}
-            ),
-        });
+            exists($spec{index}) ? ( index => $spec{index} ) : (),
+            exists($spec{type})  ? ( type  => $spec{type}  ) : (),
+        );
 
         return $status eq '200';
     }
@@ -94,13 +92,11 @@ sub create {
     my ($self, %spec) = @_;
     my $res = {};
     for my $index_name ( keys %{ $spec{index} } ) {
-        my ($status, $body) = Elastijk::request({
-            host => $self->{host},
-            port => $self->{port},
+        my ($status, $body) = $self->request(
             index => $index_name,
             method => "PUT",
             body => $spec{index}{$index_name}
-        });
+        );
         $res->{$index_name} = { status => $status, body => $body }
     }
 
@@ -111,12 +107,10 @@ sub delete {
     my ($self, %spec) = @_;
     my $res = {};
     my $index_name = $spec{index};
-    my ($status, $body) = Elastijk::request({
-        host => $self->{host},
-        port => $self->{port},
+    my ($status, $body) = $self->request(
         index => $index_name,
         method => "DELETE"
-    });
+    );
     $res->{$index_name} = { status => $status, body => $body };
     return $res;
 }
@@ -125,20 +119,14 @@ sub search {
     my $self = shift;
     my %args = @_;
     my $search_type = delete $args{search_type};
-    my ($status, $body) = Elastijk::request({
+    my ($status, $body) = $self->request(
         method => "GET",
-        host => $self->{host},
-        port => $self->{port},
-        $self->{index} ? ( index => $self->{index} ) : (),
-        $self->{type}  ? ( type  => $self->{type}  ) : (),
-
         command => "_search",
         $search_type ? (
             uri_param => { search_type => $search_type }
         ) : (),
-
         body => \%args,
-    });
+    );
 
     return {
         status => $status,
@@ -149,17 +137,11 @@ sub search {
 
 sub uri_search {
     my ($self, %args) = @_;
-    my ($status, $body) = Elastijk::request({
+    my ($status, $body) = $self->request(
         method => "GET",
-        host => $self->{host},
-        port => $self->{port},
-        $self->{index} ? ( index => $self->{index} ) : (),
-        $self->{type}  ? ( type  => $self->{type}  ) : (),
-
         command => "_search",
         uri_param => \%args,
-    });
-
+    );
     return {
         status => $status,
         body => $body,

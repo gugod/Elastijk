@@ -31,8 +31,7 @@ is $status, "404", "$test_index_name missing";
     }
 });
 is $status, "200";
-# diag encode_json($res);
-ok($res->{ok}) if $res;
+ok( ($res->{ok} || $res->{acknowledged}) , encode_json($res)) if $res;
 
 ## index exists
 ($status, $res) = Elastijk::request({ method => "HEAD", index  => $test_index_name });
@@ -42,7 +41,7 @@ is $status, "200", "$test_index_name exists";
 ## delete it.
 ($status, $res) = Elastijk::request({ method => "DELETE", index  => $test_index_name });
 is $status, "200";
-ok($res->{ok}) if $res;
+ok( ($res->{ok} || $res->{acknowledged}) , encode_json($res)) if $res;
 # diag encode_json($res);
 
 ## index exists

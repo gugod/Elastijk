@@ -40,7 +40,7 @@ sub request {
         $arg->{body} = $JSON->encode( $arg->{body} );
     }
     my ($status, $res_body) = request_raw($arg);
-    $res_body = $res_body ? $JSON->decode($res_body) : undef;
+    $res_body = $res_body ? eval { $JSON->decode($res_body) } : undef;
     return $status, $res_body;
 }
 
