@@ -14,50 +14,57 @@ my $es = Elastijk->new( host => "localhost", port => "9200" );
 my $test_index_name = "test_index_$$";
 my $res;
 
-# Check if the index exists
-$res = $es->exists( index => $test_index_name );
-ok !$res, "The index $test_index_name should not exist because we have not created it yet.";
+subtest "create an index with settings and mappings" => sub {
+    # Check if the index exists
+    $res = $es->exists( index => $test_index_name );
+    ok !$res, "The index $test_index_name should not exist because we have not created it yet.";
 
-# Create an index with settings and mappings.
-$res = $es->create(
-    index => {
-        $test_index_name => {
-            settings => {
-                index => {
-                    number_of_shards => 2,
-                    number_of_replicas => 0,
-                }
-            },
-            mappings => {
-                cafe => {
-                    properties => {
-                        name => { type => "string" },
-                        address => { type => "string" }
+    # Create an index with settings and mappings.
+    $res = $es->create(
+        index => {
+            $test_index_name => {
+                settings => {
+                    index => {
+                        number_of_shards => 2,
+                        number_of_replicas => 0,
+                    }
+                },
+                mappings => {
+                    cafe => {
+                        properties => {
+                            name => { type => "string" },
+                            address => { type => "string" }
+                        }
                     }
                 }
             }
         }
-    }
-);
+    );
 
-# Check if the index exists
-$res = $es->exists( index => $test_index_name );
-ok $res, "The index $test_index_name exists, because we just created it.";
+    subtest "checking the essential key-vasues retured hash" => sub {
+        ok exists $res->{$test_index_name};
+        ok exists $res->{$test_index_name}{body};
+        ok exists $res->{$test_index_name}{status};
+    };
 
-# Check if the index exists
-$res = $es->exists( index => $test_index_name, type => "cafe" );
-ok $res, "The type 'cafe' exists in the index ${test_index_name}, because we specified the mapping when creating the index.";
+    subtest "Check if the index ($test_index_name) we just created exists" => sub {
+        ok $es->exists( index => $test_index_name );
+    };
 
-# Check if the index exists
-$res = $es->exists( index => $test_index_name, type => "printer" );
-ok !$res, "The type 'printer' does not exists in the index ${test_index_name} (as expected), because we did not specify it in the index.";
+    subtest "Check if the type 'cafe' exists in the index ${test_index_name}, by specifying the name of the type." => sub {
+        ok $es->exists( index => $test_index_name, type => "cafe" );
+    };
 
+    subtest "check if the type 'printer' does not exist in the index ${test_index_name}" => sub {
+        ok !($es->exists( index => $test_index_name, type => "printer" ));
+    };
 
-# Delete the index.
-$res = $es->delete( index => $test_index_name );
+    # Delete the index.
+    $res = $es->delete( index => $test_index_name );
 
-# Check if the index exists
-$res = $es->exists( index => $test_index_name );
-ok !$res, "The index $test_index_name does not exist, because we just deleted it.";
+    # Check if the index exists
+    $res = $es->exists( index => $test_index_name );
+    ok !$res, "The index $test_index_name does not exist, because we just deleted it.";
+};
 
 done_testing;
