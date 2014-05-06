@@ -91,25 +91,27 @@ Elastijk - A specialized ElasticSearch client.
 
 =head1 DESCRIPTION
 
-Elastijk is a ElasticSearch client library. It uses L<Hijk>, a HTTP client that
+Elastijk isn a ElasticSearch client library. It uses L<Hijk>, a HTTP client that
 implements a tiny subset of HTTP/1.1 just enough to talk to ElasticSearch via
 HTTP.
 
 Elastijk provided low-level functions that are almost identical as using HTTP
-client, and a object-oriented sugar-layer to make it easier to use. The following
-documentation describe the object-oriented uses first, then the functions.
+client, and an object-oriented sugar layer to make it a little bit easier to
+use. The following documentation describe the object-oriented uses first, then
+the functions.
 
 =head2 OBJECT PROPERTIES
 
-An Elastijk object does not use object frameworks, but just follow the perl
-convention. Object is a blessed hash, while all key-value pairs in the hash are
-the properties. Users could break the pacaking and modify those values, but it
-is fine. All key-value pairs are shallow-copied from `new` method:
+An Elastijk object is constructed like this:
 
     my $es = Elastijk->new(
         host => "es1.example.com",
         port => "9200"
     );
+
+Under the hood, it is only a blessed hash, while all key-value pairs in the hash
+are the properties. Users could break the pacaking and modify those values, but
+it is fine. All key-value pairs are shallow-copied from `new` method.
 
 Here's a full list of key-value pairs that are consumed:
 
@@ -119,10 +121,17 @@ Here's a full list of key-value pairs that are consumed:
     type  => Str (optional)
 
 The values for C<index> and C<type> act like a "default" value and they are only
-used in methods that could use them. Those methods should also takes new values
-for index or type and overrieds the defaults.
+used in methods that could use them.
 
 =head1 OBJECT METHODS
+
+=head2 request( ... )
+
+This is a low-level method that just bypass things, but it is useful when, say,
+newer ElasticSearch versoin introduce a new command, and there are no
+corresponding method in the Client yet. The only difference between using this
+method and calling C<Elasijk::request> directly, is that the values of
+C<host>,C<port>,C<index>, and <type> ind the object context are consumed.
 
 =head2 search( $param1 => $value1, $param2 => $value2, ... )
 

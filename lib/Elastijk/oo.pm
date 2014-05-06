@@ -64,7 +64,6 @@ sub index {
 sub get {
     my ($self, %spec) = @_;
     my ($status, $res) = $self->request(
-        method => "GET",
         exists($spec{index}) ? ( index => $spec{index} ) : (),
         exists($spec{type})  ? ( type  => $spec{type}  ) : (),
         command => $spec{id},
@@ -120,7 +119,6 @@ sub search {
     my %args = @_;
     my $search_type = delete $args{search_type};
     my ($status, $body) = $self->request(
-        method => "GET",
         command => "_search",
         $search_type ? (
             uri_param => { search_type => $search_type }
@@ -138,7 +136,6 @@ sub search {
 sub uri_search {
     my ($self, %args) = @_;
     my ($status, $body) = $self->request(
-        method => "GET",
         command => "_search",
         uri_param => \%args,
     );
