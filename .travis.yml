@@ -8,9 +8,13 @@ perl:
   - "5.10"
   - "5.8"
 
+env:
+  - ES_VERSION=0.90.0
+  - ES_VERSION=0.90.11
+
 before_install:
-  - curl --silent -L http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.0.tar.gz | tar -xz
-  - ./elasticsearch-0.90.0/bin/elasticsearch
+  - curl --silent -L http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar -xz
+  - ./elasticsearch-${ES_VERSION}/bin/elasticsearch
   - cpanm -n Minilla Devel::Cover::Report::Coveralls
   - export TEST_LIVE=1
 
