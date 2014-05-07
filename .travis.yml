@@ -13,8 +13,7 @@ env:
   - ES_VERSION=0.90.11
 
 before_install:
-  - curl --silent -L http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar -xz
-  - ./elasticsearch-${ES_VERSION}/bin/elasticsearch
+  - sh t/prepare-travis-ci.sh
   - cpanm -n Minilla Devel::Cover::Report::Coveralls
   - export TEST_LIVE=1
 
