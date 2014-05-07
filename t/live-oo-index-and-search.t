@@ -76,6 +76,38 @@ subtest "index 2 documents" => sub {
     }
 };
 
+subtest "index 2 documents with the value of 'type' attribute in the object." => sub {
+    my $es = Elastijk->new(
+        host => 'localhost',
+        port => '9200',
+
+        index => $test_index_name,
+        type => "cafe",
+    );
+
+    pass ref($es);
+
+    my $sources = [{
+        name => "where",
+        address => "No. 42, that road.",
+    },{
+        name => "leave",
+        address => "No. 42, the street.",
+    }];
+
+    $res = $es->index($sources);
+    is ref($res), 'HASH';
+    is ref($res->{items}), 'ARRAY';
+
+    for(my $i = 0; $i < @$sources; $i++) {
+        my $source = $sources->[$i];
+        my ($action, $res2) = (%{$res->{items}[$i]});
+        is $action, 'create';
+        my $res3 = $es->get( type => "cafe", id => $res2->{_id} );
+        is_deeply($res3->{_source}, $source);
+    }
+};
+
 subtest "index single/multiple documents, with extra attributes" => sub {
     local $TODO = "The test for response is incomplete.";
 
