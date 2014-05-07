@@ -10,7 +10,7 @@ sub new {
 
 {
     no warnings 'redefine';
-    *Elastijk::new = *Elastijk::oo::new;
+    *Elastijk::new = sub { shift; Elastijk::oo->new(@_) };
 };
 
 sub request {
@@ -26,7 +26,9 @@ sub request_raw {
 }
 
 sub index {
-    my ($self, $type, $doc) = @_;
+    my $self = shift;
+    my $doc  = pop;
+    my $type = @_ ? $_[0] : $self->{type};
 
     if (ref($doc) eq 'ARRAY') {
         my $body = "";
@@ -43,7 +45,7 @@ sub index {
 
         my ($status, $res) = $self->request_raw(
             method => "POST",
-            type => $type,
+            defined($type) ? ( type => $type ) : (),
             command => "_bulk",
             body => $body,
         );
@@ -52,7 +54,7 @@ sub index {
     } elsif (ref($doc) eq 'HASH') {
         my ($status, $res) = $self->request(
             method => "POST",
-            type  => $type,
+            defined($type) ? ( type => $type ) : (),
             body => $doc,
         );
         return $res;
