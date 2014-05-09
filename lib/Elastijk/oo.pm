@@ -34,7 +34,7 @@ sub index {
         my $body = "";
         for my $d (@$doc) {
             if (ref($d) eq 'ARRAY') {
-                $body .= $Elastijk::JSON->encode($d->[0]) . "\n"
+                $body .= $Elastijk::JSON->encode({ index => $d->[0] }) . "\n"
                     . $Elastijk::JSON->encode($d->[1]) . "\n";
             }
             elsif (ref($d) eq 'HASH') {
@@ -118,34 +118,11 @@ sub delete {
 
 sub search {
     my $self = shift;
-    my %args = @_;
-    my $search_type = delete $args{search_type};
-    my ($status, $body) = $self->request(
-        command => "_search",
-        $search_type ? (
-            uri_param => { search_type => $search_type }
-        ) : (),
-        body => \%args,
-    );
-
+    my ($status, $body) = $self->request(command => "_search", method => "GET", @_);
     return {
         status => $status,
         body => $body,
     }
 }
-
-
-sub uri_search {
-    my ($self, %args) = @_;
-    my ($status, $body) = $self->request(
-        command => "_search",
-        uri_param => \%args,
-    );
-    return {
-        status => $status,
-        body => $body,
-    }
-}
-
 
 1;
