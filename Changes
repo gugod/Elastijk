@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  - Add "request" and "request_raw" method to Elastijk::oo
+
 0.03 2014-03-16T22:35:57Z
 
   - Add "search" and "uri_search" method.
