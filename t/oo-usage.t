@@ -45,6 +45,15 @@ subtest "The request structure for _search command" => sub {
         path  => "/foo,baz/_search",
         body  => $q_json,
     });
+
+    $es->search(index => "foo", uri_param => { q => "bar" });
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "GET",
+        path  => "/foo/_search",
+        query_string => "q=bar",
+    });
 };
 
 done_testing;
