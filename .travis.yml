@@ -9,12 +9,13 @@ perl:
   - "5.8"
 
 env:
-  - TEST_LIVE=1 ES_VERSION=0.90.0
-  - TEST_LIVE=1 ES_VERSION=0.90.11
+  - TEST_LIVE=1 ES_VERSION=0.90.0  ES_OPT=
+  - TEST_LIVE=1 ES_VERSION=0.90.11 ES_OPT=
+  - TEST_LIVE=1 ES_VERSION=1.1.1   ES_OPT=-d
 
 before_install:
   - curl --silent -L http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar -xz
-  - ./elasticsearch-${ES_VERSION}/bin/elasticsearch
+  - ./elasticsearch-${ES_VERSION}/bin/elasticsearch $ES_OPT
   - cpanm -n Minilla Devel::Cover::Report::Coveralls
   - curl http://localhost:9200/
 
