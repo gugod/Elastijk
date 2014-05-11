@@ -11,7 +11,7 @@ my $request_content;
 no warnings 'redefine';
 sub Hijk::request {
     $request_content = $_[0];
-    return {}
+    return { status => 200, body => "" }
 }
 use warnings;
 

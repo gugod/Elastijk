@@ -39,7 +39,8 @@ sub get {
 
 sub exists {
     my $self = shift;
-    return $self->request(method => "HEAD", @_);
+    my $res = $self->request(method => "HEAD", @_);
+    return '2' eq substr($res->{status},0,1);
 }
 
 sub create {
