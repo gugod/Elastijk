@@ -125,6 +125,35 @@ used in methods that could use them.
 
 =head1 OBJECT METHODS
 
+All methods takes these key-value pairs
+
+    host  => Str
+    port  => Str
+    index => Str
+    type  => Str
+    id    => Str
+    command => Str
+    uri_param => HashRef
+    body  => HashRef | ArrayRef | Str
+
+The 4 values of C<index>, C<type>, C<id>, C<command> are used to form the URI
+path following ElasticSearch's routing convention:
+
+    /${index}/${type}/${id}/${command}
+
+All these path parts are optional, when that is the case, Elstaijk properly
+remove C</> in between to form the URL that makes sense.
+
+    /${index}/${type}/${id}
+    /${index}/${command}
+
+Most of of methods are named after an server command. For eaxmple, the command
+C<_search> corresponds to method C<search>, the command C<_bulk> corresponds to
+method C<bulk>.
+
+Elastijk does as little data transformation as possible to keep it a
+stupid, thin client.
+
 =head2 request( ... )
 
 This is a low-level method that just bypass things, but it is useful when, say,
@@ -136,12 +165,6 @@ C<host>,C<port>,C<index>, and <type> ind the object context are consumed.
 =head2 search( $param1 => $value1, $param2 => $value2, ... )
 
 This method encapsulate <request body search|http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-body.html>
-
-The arguments are key-value pairs from the API documents.
-
-=head2 uri_search ( ... )
-
-This method encapsulate C<uri search|http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-uri-request.html>
 
 The arguments are key-value pairs from the API documents.
 

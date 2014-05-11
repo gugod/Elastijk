@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  - Change the parameter spec for almost all methods in Elastijk::oo
+
 0.04 2014-05-09T06:30:43Z
 
   - Add "request" and "request_raw" method to Elastijk::oo
