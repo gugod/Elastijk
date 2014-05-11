@@ -5,7 +5,6 @@ use Test::More;
 
 use Elastijk;
 
-my $es = Elastijk->new( host => "es.example.com", port => 9200 );
 my $request_content;
 
 no warnings 'redefine';
@@ -17,6 +16,8 @@ use warnings;
 
 
 subtest "The request structure for single-document APIs" => sub {
+    my $es = Elastijk->new( host => "es.example.com", port => 9200 );
+
     $es->get(index => "foo", type => "bar", id => "kk");
     is_deeply( $request_content, {
         host => "es.example.com",
@@ -46,6 +47,7 @@ subtest "The request structure for single-document APIs" => sub {
 
 
 subtest "The request structure for _search command" => sub {
+    my $es = Elastijk->new( host => "es.example.com", port => 9200 );
     my $q = { query => { match_all => {} } };
     my $q_json = $Elastijk::JSON->encode($q);
 
@@ -87,12 +89,58 @@ subtest "The request structure for _search command" => sub {
 };
 
 subtest "{indices,type} exists api" => sub {
-    $es->exists(index => "foo");
+    my $es = Elastijk->new( host => "es.example.com", port => 9200 );
+    $es->exists(index => "foo" );
     is_deeply( $request_content, {
         host => "es.example.com",
         port => 9200,
         method => "HEAD",
         path  => "/foo",
+    });
+
+    $es->exists(index => "foo", type => "baz");
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "HEAD",
+        path  => "/foo/baz",
+    });
+
+    # http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/doc-exists.html#doc-exists
+    $es->exists(index => "foo", type => "baz", id => 15);
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "HEAD",
+        path  => "/foo/baz/15",
+    });
+};
+
+subtest "{indices,type} exists api, with 'index' name coming from object." => sub {
+    my $es = Elastijk->new( host => "es.example.com", port => 9200, index => "foo" );
+    $es->exists();
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "HEAD",
+        path  => "/foo",
+    });
+
+    $es->exists(type => "baz");
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "HEAD",
+        path  => "/foo/baz",
+    });
+
+    # http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/doc-exists.html#doc-exists
+    $es->exists(type => "baz", id => 15);
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "HEAD",
+        path  => "/foo/baz/15",
     });
 };
 

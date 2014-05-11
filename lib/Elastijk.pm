@@ -154,6 +154,21 @@ method C<bulk>.
 Elastijk does as little data transformation as possible to keep it a
 stupid, thin client.
 
+All methods return 2 values that are HTTP status code string, and the body
+hashref.
+
+    my ($status, $res) = $es->search(...)
+    if ($status =~ /\A2/) { # successful
+        ....
+    }
+
+The status code is used for error-checking purposes. The C<exists> method
+modifyed C<$res> to be a boolean to allow this intuitive uses:
+
+    if ($es->exists( ... )) {
+        ....
+    }
+
 =head2 request( ... )
 
 This is a low-level method that just bypass things, but it is useful when, say,
@@ -162,23 +177,24 @@ corresponding method in the Client yet. The only difference between using this
 method and calling C<Elasijk::request> directly, is that the values of
 C<host>,C<port>,C<index>, and <type> ind the object context are consumed.
 
-=head2 search( $param1 => $value1, $param2 => $value2, ... )
+=head2 search( ... )
 
 This method encapsulate <request body search|http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-body.html>
 
 The arguments are key-value pairs from the API documents.
 
-=head2 exists( index => Str )
+=head2 exists( index => Str, type => Str, id => Str )
 
-Check if the given index exists.
+Check if the given thing exists. Which can be a document, a type, and an index.
+Due to the nature of their dependency, here's the combination you would need
+to check the existence of different things:
 
-See also L<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-exists.html>
+    document: index => "foo", type => "bar", id => "beer"
+    type:     index => "foo", type => "bar"
+    index:    index => "foo"
 
-=head2 exists( index => Str, type => Str )
-
-Check if the given type exists.
-
-See also L<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html>
+See also L<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-exists.html> ,
+L<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html#indices-types-exists> , and L<http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/doc-exists.html>
 
 =head2 delete
 
