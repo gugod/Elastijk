@@ -11,13 +11,14 @@ unless ($ENV{TEST_LIVE}) {
 use Elastijk;
 
 my $res;
-my $test_index_name = "test_index_$$";
+my $test_index_name = "test_index_$$".rand();
 
 my $es = Elastijk->new(
     host => 'localhost',
     port => '9200',
     index => $test_index_name,
 );
+
 
 ## create the index, and index some documents.
 $es->create(
@@ -41,20 +42,6 @@ $es->create(
     }
 );
 
-subtest "index a single document." => sub {
-    my $source = {
-        name => "daily",
-        address => "No. 42, routine road.",
-    };
-
-    my $res = $es->index(cafe => $source);
-    is ref($res), 'HASH';
-    ok defined($res->{_id});
-
-    $res = $es->get( type => "cafe", id => $res->{_id} );
-    is_deeply($res->{_source}, $source);
-};
-
 subtest "index 2 documents" => sub {
     my $sources = [{
         name => "autumn",
@@ -63,17 +50,41 @@ subtest "index 2 documents" => sub {
         name => "ink",
         address => "No. 42, black street.",
     }];
-    $res = $es->index(cafe => $sources);
+
+    $res = $es->bulk(
+        type => "cafe",
+        body => [ map {({index=>{}}, $_)} @$sources ]
+    );
+
     is ref($res), 'HASH';
-    is ref($res->{items}), 'ARRAY';
+    is ref($res->{body}{items}), 'ARRAY';
 
     for(my $i = 0; $i < @$sources; $i++) {
         my $source = $sources->[$i];
-        my ($action, $res2) = (%{$res->{items}[$i]});
+        my ($action, $res2) = (%{$res->{body}{items}[$i]});
         is $action, 'create';
         my $res3 = $es->get( type => "cafe", id => $res2->{_id} );
-        is_deeply($res3->{_source}, $source);
+        is_deeply($res3->{body}{_source}, $source);
     }
+};
+
+subtest "index a single document, then get it." => sub {
+    my $source = {
+        name => "daily",
+        address => "No. 42, routine road. " . rand(),
+    };
+
+    my $res = $es->index(
+        type  => "cafe",
+        body  => $source
+    );
+
+    is ref($res), 'HASH';
+    my $id = $res->{body}{_id};
+    ok defined($id), "the new document id is found.";
+
+    $res = $es->get( type => "cafe", id => $id );
+    is_deeply($res->{body}{_source}, $source, "The _source match our original document.");
 };
 
 subtest "index 2 documents with the value of 'type' attribute in the object." => sub {
@@ -95,36 +106,18 @@ subtest "index 2 documents with the value of 'type' attribute in the object." =>
         address => "No. 42, the street.",
     }];
 
-    $res = $es->index($sources);
+    $res = $es->bulk(body => [map {( {index => {}}, $_ )} @$sources]);
+
     is ref($res), 'HASH';
-    is ref($res->{items}), 'ARRAY';
+    is ref($res->{body}{items}), 'ARRAY';
 
     for(my $i = 0; $i < @$sources; $i++) {
         my $source = $sources->[$i];
-        my ($action, $res2) = (%{$res->{items}[$i]});
+        my ($action, $res2) = (%{$res->{body}{items}[$i]});
         is $action, 'create';
         my $res3 = $es->get( type => "cafe", id => $res2->{_id} );
-        is_deeply($res3->{_source}, $source);
+        is_deeply($res3->{body}{_source}, $source);
     }
-};
-
-subtest "index single/multiple documents, with extra attributes" => sub {
-    local $TODO = "The test for response is incomplete.";
-
-    $res = $es->index(
-        cafe => [
-            [{ id => "morelax", routing => "taipei"},
-             { name => "morelax", address => "No. 60, hangout road."}],
-
-            [{ id => "lotus", routing => "hsinchu" },
-             { name => "Lotus", address => "No. 12, flower market." }],
-
-            [{ id => "yeh", routing => "taichung" },
-             { name => "Yeh", address => "No. 1, processor lane." }]
-        ]
-    );
-    is ref($res), 'HASH';
-    is ref($res->{items}), 'ARRAY';
 };
 
 # done testing. delete the index.

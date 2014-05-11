@@ -15,6 +15,36 @@ sub Hijk::request {
 }
 use warnings;
 
+
+subtest "The request structure for single-document APIs" => sub {
+    $es->get(index => "foo", type => "bar", id => "kk");
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "GET",
+        path  => "/foo/bar/kk",
+    });
+
+    $es->delete(index => "foo", type => "bar", id => "kk");
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "DELETE",
+        path  => "/foo/bar/kk",
+    });
+
+    $es->index(index => "foo", type => "bar", id => "kk", body => { z => 1 });
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "PUT",
+        path  => "/foo/bar/kk",
+        body => '{"z":1}'
+    });
+
+};
+
+
 subtest "The request structure for _search command" => sub {
     my $q = { query => { match_all => {} } };
     my $q_json = $Elastijk::JSON->encode($q);
@@ -55,5 +85,18 @@ subtest "The request structure for _search command" => sub {
         query_string => "q=bar",
     });
 };
+
+subtest "{indices,type} exists api" => sub {
+    $es->exists(index => "foo");
+    is_deeply( $request_content, {
+        host => "es.example.com",
+        port => 9200,
+        method => "HEAD",
+        path  => "/foo",
+    });
+};
+
+
+
 
 done_testing;
