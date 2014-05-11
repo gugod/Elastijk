@@ -21,26 +21,26 @@ my $es = Elastijk->new(
 
 
 ## create the index, and index some documents.
-$es->create(
-    index => {
-        $test_index_name => {
-            settings => {
-                index => {
-                    number_of_replicas => 0,
-                    number_of_shards => 1
-                }
-            },
-            mappings => {
-                cafe => {
-                    properties => {
-                        name => { type => "string" },
-                        address => { type => "string" }
-                    }
+$res = $es->put(
+    index => $test_index_name,
+    body => {
+        settings => {
+            index => {
+                number_of_replicas => 0,
+                number_of_shards => 1
+            }
+        },
+        mappings => {
+            cafe => {
+                properties => {
+                    name => { type => "string" },
+                    address => { type => "string" }
                 }
             }
         }
     }
 );
+ok $es->exists( index => $test_index_name ), "The newly created index doe exist.";
 
 subtest "index 2 documents" => sub {
     my $sources = [{

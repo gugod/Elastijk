@@ -35,30 +35,30 @@ sub get {
     return $self->request(method => "GET", @_);
 }
 
-sub exists {
+sub put {
     my $self = shift;
-    my ($status,$res) = $self->request(method => "HEAD", @_);
-    return ($status,'2' eq substr($status,0,1));
-}
-
-sub create {
-    my ($self, %spec) = @_;
-    my $res = {};
-    for my $index_name ( keys %{ $spec{index} } ) {
-        my ($status, $body) = $self->request(
-            index => $index_name,
-            method => "PUT",
-            body => $spec{index}{$index_name}
-        );
-        $res->{$index_name} = { status => $status, body => $body }
-    }
-
-    return $res;
+    $self->request(method => "PUT", @_);
 }
 
 sub delete {
     my $self = shift;
     return $self->request(method => "DELETE", @_);
+}
+
+sub head {
+    my $self = shift;
+    return $self->request(method => "HEAD", @_);
+}
+
+sub post {
+    my $self = shift;
+    return $self->request(method => "POST", @_);
+}
+
+sub exists {
+    my $self = shift;
+    my ($status,$res) = $self->request(method => "HEAD", @_);
+    return ($status,'2' eq substr($status,0,1));
 }
 
 sub search {

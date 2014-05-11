@@ -20,32 +20,25 @@ subtest "create an index with settings and mappings" => sub {
     ok !$res, "The index $test_index_name should not exist because we have not created it yet.";
 
     # Create an index with settings and mappings.
-    $res = $es->create(
-        index => {
-            $test_index_name => {
-                settings => {
-                    index => {
-                        number_of_shards => 2,
-                        number_of_replicas => 0,
-                    }
-                },
-                mappings => {
-                    cafe => {
-                        properties => {
-                            name => { type => "string" },
-                            address => { type => "string" }
-                        }
+    $res = $es->put(
+        index => $test_index_name,
+        body => {
+            settings => {
+                index => {
+                    number_of_shards => 2,
+                    number_of_replicas => 0,
+                }
+            },
+            mappings => {
+                cafe => {
+                    properties => {
+                        name => { type => "string" },
+                        address => { type => "string" }
                     }
                 }
             }
         }
     );
-
-    subtest "checking the essential key-vasues retured hash" => sub {
-        ok exists $res->{$test_index_name};
-        ok exists $res->{$test_index_name}{body};
-        ok exists $res->{$test_index_name}{status};
-    };
 
     subtest "Check if the index ($test_index_name) we just created exists" => sub {
         ok $es->exists( index => $test_index_name );
