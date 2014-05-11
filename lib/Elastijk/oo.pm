@@ -16,15 +16,13 @@ sub new {
 sub request {
     my ($self, %args) = @_;
     $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type);
-    my ($status, $body) = Elastijk::request(\%args);
-    return { status => $status, body => $body }
+    return Elastijk::request(\%args);
 }
 
 sub request_raw {
     my ($self, %args) = @_;
     $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type);
-    my ($status, $body) = Elastijk::request_raw(\%args);
-    return { status => $status, body => $body };
+    return Elastijk::request_raw(\%args);
 }
 
 sub index {
@@ -39,8 +37,8 @@ sub get {
 
 sub exists {
     my $self = shift;
-    my $res = $self->request(method => "HEAD", @_);
-    return '2' eq substr($res->{status},0,1);
+    my ($status,$res) = $self->request(method => "HEAD", @_);
+    return ($status,'2' eq substr($status,0,1));
 }
 
 sub create {
@@ -71,9 +69,9 @@ sub search {
 sub bulk {
     my ($self, %args) = @_;
     $args{body} = join("", map { $Elastijk::JSON->encode($_)."\n" } @{$args{body}});
-    my $res = $self->request_raw(method => "POST", command => "_bulk", %args);
-    $res->{body} = $Elastijk::JSON->decode($res->{body}) if $res->{body};
-    return $res;
+    my ($status,$res) = $self->request_raw(method => "POST", command => "_bulk", %args);
+    $res = $Elastijk::JSON->decode($res) if $res;
+    return ($status, $res);
 }
 
 1;

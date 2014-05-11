@@ -57,14 +57,14 @@ subtest "index 2 documents" => sub {
     );
 
     is ref($res), 'HASH';
-    is ref($res->{body}{items}), 'ARRAY';
+    is ref($res->{items}), 'ARRAY';
 
     for(my $i = 0; $i < @$sources; $i++) {
         my $source = $sources->[$i];
-        my ($action, $res2) = (%{$res->{body}{items}[$i]});
+        my ($action, $res2) = (%{$res->{items}[$i]});
         is $action, 'create';
         my $res3 = $es->get( type => "cafe", id => $res2->{_id} );
-        is_deeply($res3->{body}{_source}, $source);
+        is_deeply($res3->{_source}, $source);
     }
 };
 
@@ -80,11 +80,11 @@ subtest "index a single document, then get it." => sub {
     );
 
     is ref($res), 'HASH';
-    my $id = $res->{body}{_id};
+    my $id = $res->{_id};
     ok defined($id), "the new document id is found.";
 
     $res = $es->get( type => "cafe", id => $id );
-    is_deeply($res->{body}{_source}, $source, "The _source match our original document.");
+    is_deeply($res->{_source}, $source, "The _source match our original document.");
 };
 
 subtest "index 2 documents with the value of 'type' attribute in the object." => sub {
@@ -109,14 +109,14 @@ subtest "index 2 documents with the value of 'type' attribute in the object." =>
     $res = $es->bulk(body => [map {( {index => {}}, $_ )} @$sources]);
 
     is ref($res), 'HASH';
-    is ref($res->{body}{items}), 'ARRAY';
+    is ref($res->{items}), 'ARRAY';
 
     for(my $i = 0; $i < @$sources; $i++) {
         my $source = $sources->[$i];
-        my ($action, $res2) = (%{$res->{body}{items}[$i]});
+        my ($action, $res2) = (%{$res->{items}[$i]});
         is $action, 'create';
         my $res3 = $es->get( type => "cafe", id => $res2->{_id} );
-        is_deeply($res3->{body}{_source}, $source);
+        is_deeply($res3->{_source}, $source);
     }
 };
 
