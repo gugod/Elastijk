@@ -18,28 +18,38 @@ my @tests = (
     [
         { command => "_search",
           uri_param => { search_type => "count" },
-          body => { query => { match_all => {} } } },
+          body => '{"query":{"match_all":{}}}' },
         { path => "/_search",
           query_string => "search_type=count",
           body => '{"query":{"match_all":{}}}' }
     ],
+
     [
         { command => "_search",
-          uri_param => { search_type => "count" },
-          body => { query => { "match_all" => {} } }  },
+          uri_param => { search_type => "scan" },
+          body => '{"query":{"match_all":{}}}'  },
         { path => "/_search",
-          query_string => "search_type=count",
+          query_string => "search_type=scan",
           body => '{"query":{"match_all":{}}}'  }
     ],
 
     [
-        { command => "_search",
-          uri_param => { search_type => "count" },
-          body => '{"query":{"match_all":{}}}'  },
-        { path => "/_search",
-          query_string => "search_type=count",
-          body => '{"query":{"match_all":{}}}'  }
+        { uri_param => { timeout => "3" },
+          index => "foo",
+          type  => "bar",
+          id    => "42" },
+        { path => "/foo/bar/42",
+          query_string => "timeout=3" }
     ],
+
+    [{
+        index => "foo",
+        type  => "bar",
+        method => "HEAD",
+    },{
+        path => "/foo/bar",
+        method => "HEAD",
+    }],
 );
 
 for (@tests) {

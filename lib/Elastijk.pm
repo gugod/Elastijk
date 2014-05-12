@@ -16,20 +16,13 @@ sub _build_hijk_request_args {
     if ($args->{uri_param}) {
         $qs =  join('&', map { uri_escape($_) . "=" . uri_escape($args->{uri_param}{$_}) } keys %{$args->{uri_param}});
     }
-
     return {
         method => $args->{method} || 'GET',
         host   => $args->{host}   || 'localhost',
         port   => $args->{port}   || '9200',
-        !$path ?() :(
-            path   => $path
-        ),
-        !$qs ?() :(
-            query_string => $qs
-        ),
-        !$args->{body} ?() :(
-            body => (ref($args->{body}) ? $JSON->encode($args->{body}) : $args->{body})
-        ),
+        path   => $path,
+        $qs?( query_string => $qs) :(),
+        (map { (exists $args->{$_})?( $_ => $args->{$_} ) :() } qw(connect_timeout read_timeout head body socket_cache on_connect)),
     }
 }
 
