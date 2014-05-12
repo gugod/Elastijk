@@ -66,6 +66,13 @@ sub search {
     return $self->request(command => "_search", method => "GET", @_);
 }
 
+sub count {
+    my $self = shift;
+    my ($status,$res) = $self->request(command => "_count", method => "GET", @_);
+    return ($status, $res->{count});
+}
+
+
 sub bulk {
     my ($self, %args) = @_;
     $args{body} = join("", map { $Elastijk::JSON->encode($_)."\n" } @{$args{body}});

@@ -68,6 +68,27 @@ subtest "index 2 documents" => sub {
     }
 };
 
+subtest "index then count" => sub {
+    my $sources = [{
+        name => "autumn",
+        address => "No. 42, leaf road.",
+    },{
+        name => "ink",
+        address => "No. 42, black street.",
+    }];
+
+    my $res = $es->bulk(
+        index => $test_index_name,
+        type => "cafe",
+        body => [ map {({index=>{}}, $_)} @$sources ]
+    );
+
+    $res = $es->count(index => $test_index_name);
+    is ref($res), '', "count = $res";
+    ok($res >= 0);
+};
+
+
 subtest "index a single document, then get it." => sub {
     my $source = {
         name => "daily",
