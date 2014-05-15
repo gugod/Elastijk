@@ -74,7 +74,7 @@ subtest "The request structure for _search command" => sub {
         host => "es.example.com",
         port => 9200,
         method => "GET",
-        path  => "/foo,baz/_search",
+        path  => '/foo%2Cbaz/_search',
         body  => $q_json,
     });
 
