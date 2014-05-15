@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.06 2014-05-15T08:12:04Z
+
   - Elastijk::request now expect all scalars in the input to contain wide
     characters, and it does encode_utf8 / uri_escape_utf8 internally.
 
