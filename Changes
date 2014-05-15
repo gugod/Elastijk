@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+  - Elastijk::request now expect all scalars in the input to contain wide
+    characters, and it does encode_utf8 / uri_escape_utf8 internally.
+
 0.05 2014-05-12T06:03:23Z
 
   - Change the parameter spec for almost all methods in Elastijk::oo
