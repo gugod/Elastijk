@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+  - make an exception and do not uri_escape() the "command" part.
+    see 434c01c20fe513e1e13d258cd85d74c3839c28a4
+
 0.06 2014-05-15T08:12:04Z
 
   - Elastijk::request now expect all scalars in the input to contain wide
