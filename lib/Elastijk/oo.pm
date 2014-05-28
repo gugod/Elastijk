@@ -81,4 +81,29 @@ sub bulk {
     return ($status, $res);
 }
 
+sub scan_scroll {
+    my ($self, %args) = @_;
+    my $on_response_callback = delete $args{on_response};
+
+    my %uri_param = %{ delete($args{uri_param}) || {} };
+    $uri_param{search_type} = "scan";
+    $uri_param{scroll} //= "10m";
+    my ($status, $res) = $self->get(%args, command => "_search", uri_param => \%uri_param);
+    my $scroll_id;
+
+    while (substr($status,0,1) eq '2') {
+        $scroll_id = $res->{_scroll_id};
+        ($status,$res) = $self->get(
+            index => "_search", type => "scroll", #WTF
+            uri_param => { scroll => $uri_param{scroll}, scroll_id => $scroll_id }
+        );
+        last unless substr($status,0,1) eq '2';
+        print ">> $status, $res->{_scroll_id}\n";
+        my $r = $on_response_callback->($status, $res);
+        if (defined($r) && !$r) {
+            last;
+        }
+    }
+}
+
 1;
