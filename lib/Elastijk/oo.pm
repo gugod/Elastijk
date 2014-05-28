@@ -87,20 +87,24 @@ sub scan_scroll {
 
     my %uri_param = %{ delete($args{uri_param}) || {} };
     $uri_param{search_type} = "scan";
-    $uri_param{scroll} //= "10m";
-    my ($status, $res) = $self->get(%args, command => "_search", uri_param => \%uri_param);
+    $uri_param{scroll} ||= "10m";
     my $scroll_id;
+    my ($status, $res) = $self->get(%args, command => "_search", uri_param => \%uri_param);
+    if (substr($status,0,1) ne '2') {
+        return;
+    }
 
-    while (substr($status,0,1) eq '2') {
+    while (1) {
         $scroll_id = $res->{_scroll_id};
         ($status,$res) = $self->get(
             index => "_search", type => "scroll", #WTF
             uri_param => { scroll => $uri_param{scroll}, scroll_id => $scroll_id }
         );
-        last unless substr($status,0,1) eq '2';
-        print ">> $status, $res->{_scroll_id}\n";
-        my $r = $on_response_callback->($status, $res);
-        if (defined($r) && !$r) {
+        if (substr($status,0,1) eq '2' && @{$res->{hits}{hits}} > 0) {
+            my $r = $on_response_callback->($status, $res);
+            last if defined($r) && !$r;
+            $scroll_id = $res->{_scroll_id};
+        } else {
             last;
         }
     }

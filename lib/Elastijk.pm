@@ -39,7 +39,6 @@ sub request {
 
 sub request_raw {
     my $args = _build_hijk_request_args($_[0]);
-    print Data::Dumper::Dumper($args) if $args->{method} eq "GET";
     my $res = Hijk::request($args);
     return $res->{status}, $res->{body};
 }
