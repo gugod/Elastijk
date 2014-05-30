@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  - add "scan_scroll" method to make scanning a bit easier.
+
 0.07 2014-05-15T10:54:56Z
 
   - make an exception and do not uri_escape() the "command" part.

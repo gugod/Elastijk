@@ -20,7 +20,7 @@ $es->put(
     }
 );
 
-## create 5000 documents
+## create 500 documents
 $es->post(
     type => 'somestr',
     body => {
