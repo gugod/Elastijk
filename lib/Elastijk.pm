@@ -40,7 +40,7 @@ sub request {
 sub request_raw {
     my $args = _build_hijk_request_args($_[0]);
     my $res = Hijk::request($args);
-    return $res->{status}, $res->{body};
+    return (exists $res->{error}) ? (0, '{"error":1,"hijk_error":'.$res->{error}.'}') : ($res->{status}, $res->{body});
 }
 
 sub new {
