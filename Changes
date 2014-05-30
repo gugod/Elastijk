@@ -1,6 +1,7 @@
 {{$NEXT}}
 
   - add "scan_scroll" method to make scanning a bit easier.
+  - store Hijk errors in the response body.
 
 0.07 2014-05-15T10:54:56Z
 
