@@ -15,9 +15,11 @@ env:
   - ES_VERSION=1.1.2   ES_OPT=-d TEST_LIVE=1
   - ES_VERSION=1.2.3   ES_OPT=-d TEST_LIVE=1
   - ES_VERSION=1.3.1   ES_OPT=-d TEST_LIVE=1
+  - ES_VERSION=1.4.5   ES_OPT=-d TEST_LIVE=1
+  - ES_VERSION=1.5.2   ES_OPT=-d TEST_LIVE=1
 
 before_install:
-  - curl --silent -L http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar -xz
+  - curl --silent -L https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar -xz
   - ./elasticsearch-${ES_VERSION}/bin/elasticsearch $ES_OPT
   - cpanm -n Minilla Devel::Cover::Report::Coveralls
   - curl http://localhost:9200/
