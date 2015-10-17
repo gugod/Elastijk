@@ -106,7 +106,7 @@ subtest "{indices,type} exists api" => sub {
         path  => "/foo/baz",
     });
 
-    # http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/doc-exists.html#doc-exists
+    # https://www.elastic.co/guide/guide/en/elasticsearch/guide/current/doc-exists.html#doc-exists
     $es->exists(index => "foo", type => "baz", id => 15);
     is_deeply( $request_content, {
         host => "es.example.com",
@@ -134,7 +134,7 @@ subtest "{indices,type} exists api, with 'index' name coming from object." => su
         path  => "/foo/baz",
     });
 
-    # http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/doc-exists.html#doc-exists
+    # https://www.elastic.co/guide/guide/en/elasticsearch/guide/current/doc-exists.html#doc-exists
     $es->exists(type => "baz", id => 15);
     is_deeply( $request_content, {
         host => "es.example.com",

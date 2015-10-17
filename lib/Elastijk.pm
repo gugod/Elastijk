@@ -240,13 +240,13 @@ method.
 
 =head2 search( body => {...}, uri_param => {...} )
 
-This method invokes L<the search api|http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-search.html>.
+This method invokes L<the search api|https://www.elastic.co/guide/guide/en/elasticsearch/reference/current/search-search.html>.
 
 The arguments are key-value pairs from the API documents.
 
 =head2 count( body => {...}, uri_param => {...} )
 
-This method corresponds to L<the search count api|http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html>
+This method corresponds to L<the search count api|https://www.elastic.co/guide/guide/en/elasticsearch/reference/current/search-count.html>
 
 =head2 exists( index => Str, type => Str, id => Str )
 
@@ -258,12 +258,12 @@ to check the existence of different things:
     type:     index => "foo", type => "bar"
     index:    index => "foo"
 
-See also L<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-exists.html> ,
-L<http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-types-exists.html#indices-types-exists> , and L<http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/doc-exists.html>
+See also L<https://www.elastic.co/guide/guide/en/elasticsearch/reference/current/indices-exists.html> ,
+L<https://www.elastic.co/guide/guide/en/elasticsearch/reference/current/indices-types-exists.html#indices-types-exists> , and L<https://www.elastic.co/guide/guide/en/elasticsearch/guide/current/doc-exists.html>
 
 =head2 scan_scroll( ..., on_response => sub {} )
 
-A way to perform L<scan and scroll|http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/scan-scroll.html>.
+A way to perform L<scan and scroll|https://www.elastic.co/guide/guide/en/elasticsearch/guide/current/scan-scroll.html>.
 
 The boilerplate to use it is something like:
 
