@@ -19,6 +19,7 @@ $es->put(
         aliases => { test_index => {} }
     }
 );
+$es->post(command => "_refresh");
 
 ## create 500 documents
 $es->post(
@@ -30,6 +31,7 @@ $es->post(
     }
 ) for (0..499);
 
+$es->post(command => "_refresh");
 sleep 2; # wait for refresh.
 is $es->count(), 500, "count 500 documents";
 
