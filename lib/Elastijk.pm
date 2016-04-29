@@ -188,22 +188,40 @@ This behavior is consistent for all methods.
 
 =head1 METHODS
 
-All methods takes the same key-value pair HashRef as C<Elastijk::request> function,
-and returns 2 values that are HTTP status code, and the body hashref.
+All methods takes the same key-value pair HashRef as
+C<Elastijk::request> function, and returns 2 values that are HTTP
+status code, and the body hashref. The boilerplate of checking the
+return values is something like:
+
+    my ($status, $res) = $es->search(...);
+    if (substr($status,0,1) eq '2') { # 2xx = successful
+        ... $res->{hits} ...
+    }
+
+The C<$res> contains the parsed response and it should be always a
+HashRef, but it may be an ArrayRef. Elasticsearch server mostly
+respond with a HTTP Body that is a valid JSON document -- but some
+past version of Elasticsearch does not always follow that convention in
+some APIs. Please consult the Elasticsearch API document link for the
+hints of value type. Elastijk is a thin client, and that means itself
+only assumes Elasticsearch servers response back with a valid JSON
+document, and it decodes it to a perl data structure. Elastijk does as
+little data transformation as possible to keep it a stupid, thin
+client.
+
+Due to how Perl handles multiple return values, you can omit the status
+check and just do:
+
+    my $res = $es->search(...);
+    ... $res->{hits} ...
+
+This style is by design for the convenience of developers, who can
+either worry about error checking latter, or throw the program away if
+it's just a one-timer.
 
 Many of of methods are named after an server command. For example, the command
 C<_search> corresponds to method C<search>, the command C<_bulk> corresponds to
 method C<bulk>.
-
-Elastijk does as little data transformation as possible to keep it a
-stupid, thin client.
-
-All methods return 2 values that are HTTP status code, and the body hashref:
-
-    my ($status, $res) = $es->search(...)
-    if (substr($status,0,1) eq '2') { # 2xx = successful
-        ...
-    }
 
 The status code is used for error-checking purposes. Elasticsearch should respond
 with status 4XX when the relevant thing is missing, and 5XX when there are some
@@ -213,7 +231,7 @@ Due to the fact the value of a lists is the last value of element, it is a
 little bit shorter if status check could be ignored:
 
     my $res = $es->search(...);
-    for (@{ $res->{hits}hits} }) {
+    for (@{ $res->{hits}{hits} }) {
         ...
     }
 
