@@ -284,6 +284,19 @@ The very last value to the C<on_response> key is a callback subroutine that is
 called after each HTTP request. The arguments are HTTP status code and response
 body hash just like other methods.
 
+=head2 bulk( ..., body => ArrayRef[ HashRef ], ... )
+
+The C<bulk> method is for doing commands via Elasticsearch bulk API
+L<https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html>.
+
+Unlike other methods, The C<bulk> method requires the value to the
+C<body> key to be an ArrayRef. The elements of such ArrayRef are
+HashRef that correspond to the request content described in the bulk
+API document.
+
+Notice that the request body of bulk API is not a valid JSON document
+as a whole, but just a naive concatenation of multiple JSON documents.
+
 
 =head1 AUTHORS
 
