@@ -1,5 +1,5 @@
 {
-   "abstract" : "A specialized ElasticSearch client.",
+   "abstract" : "A specialized Elasticsearch client.",
    "author" : [
       "=over 4"
    ],
@@ -65,7 +65,7 @@
          "web" : "https://github.com/gugod/Elastijk"
       }
    },
-   "version" : "0.09",
+   "version" : "0.10",
    "x_authority" : "cpan:GUGOD",
    "x_contributors" : [
       "borislav nikolov <jack@sofialondonmoskva.com>",
