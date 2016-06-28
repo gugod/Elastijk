@@ -193,7 +193,7 @@ This is a low-level method that just bypass things, but it is useful when, say,
 newer Elasticsearch version introduce a new command, and there are no
 corresponding method in the Client yet. The only difference between using this
 method and calling `Elasijk::request` directly, is that the values of
-`host`,`port`,`index`, and <type> ind the object context are consumed.
+`host`,`port`,`index`, and &lt;type> ind the object context are consumed.
 
 ## head(...), get(...), put(...), post(...), delete(...)
 
