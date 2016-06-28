@@ -15,13 +15,13 @@ sub new {
 
 sub request {
     my ($self, %args) = @_;
-    $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type);
+    $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type head);
     return Elastijk::request(\%args);
 }
 
 sub request_raw {
     my ($self, %args) = @_;
-    $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type);
+    $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type head);
     return Elastijk::request_raw(\%args);
 }
 
