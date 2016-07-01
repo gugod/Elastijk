@@ -13,15 +13,20 @@ sub new {
     *Elastijk::new = sub { shift; Elastijk::oo->new(@_) };
 };
 
+sub __fleshen_request_args {
+    my ($self, $args) = @_;
+    $args->{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type head socket_cache on_connect connect_timeout read_timeout);
+}
+
 sub request {
     my ($self, %args) = @_;
-    $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type head);
+    __fleshen_request_args($self, \%args);
     return Elastijk::request(\%args);
 }
 
 sub request_raw {
     my ($self, %args) = @_;
-    $args{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type head);
+    __fleshen_request_args($self, \%args);
     return Elastijk::request_raw(\%args);
 }
 
