@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.12 2016-07-04T13:08:16Z
+
   - Elastijk::oo - passthru more useful parameters down to Hijk.
     Specifically these ones: socket_cache, on_connect,
     connect_timeout, read_timeout
