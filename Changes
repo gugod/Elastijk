@@ -1,5 +1,10 @@
 {{$NEXT}}
 
+  - Elastijk::oo - passthru more useful parameters down to Hijk.
+    Specifically these ones: socket_cache, on_connect,
+    connect_timeout, read_timeout
+
+
 0.11 2016-06-28T12:45:58Z
 
   - Elastijk::oo - passthru "head" parameter.
