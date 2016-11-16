@@ -16,7 +16,7 @@ Elastijk - A specialized Elasticsearch client.
         type => "article",
         command => "_search",
 
-        uri_param => { search_type => "dfs_query_then_fetch" }
+        uri_param => { search_type => "dfs_query_then_fetch" },
         body => {
             query => { match => { "body" => "cpan" } }
         }
