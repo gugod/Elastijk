@@ -276,9 +276,6 @@ to check the existence of different things:
     type:     index => "foo", type => "bar"
     index:    index => "foo"
 
-See also L<https://www.elastic.co/guide/guide/en/elasticsearch/reference/current/indices-exists.html> ,
-L<https://www.elastic.co/guide/guide/en/elasticsearch/reference/current/indices-types-exists.html#indices-types-exists> , and L<https://www.elastic.co/guide/guide/en/elasticsearch/guide/current/doc-exists.html>
-
 =head2 scan_scroll( ..., on_response => sub {} )
 
 A way to perform L<scan and scroll|https://www.elastic.co/guide/guide/en/elasticsearch/guide/current/scan-scroll.html>.
