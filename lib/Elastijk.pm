@@ -12,7 +12,7 @@ our $JSON = JSON->new->utf8;
 sub _build_hijk_request_args {
     my $args = $_[0];
     my ($path, $qs, $uri_param);
-    $path = "/". join("/", (map { defined($_) ? ( uri_escape_utf8($_) ) : () } @{$args}{qw(index type id)}), (exists $args->{command} ? $args->{command} : ()));
+    $path = (exists $args->{path}) ? $args->{path} : ("/". join("/", (map { defined($_) ? ( uri_escape_utf8($_) ) : () } @{$args}{qw(index type id)}), (exists $args->{command} ? $args->{command} : ())));
     if ($args->{uri_param}) {
         $qs =  join('&', map { uri_escape_utf8($_) . "=" . uri_escape_utf8($args->{uri_param}{$_}) } keys %{$args->{uri_param}});
     }

@@ -61,8 +61,20 @@ sub post {
 }
 
 sub exists {
-    my $self = shift;
-    my ($status,$res) = $self->request(method => "HEAD", @_);
+    my ($self, %args) = @_;
+    my $index = exists($args{index}) ? $args{index} : $self->{index};
+
+    my ($status,$res);
+    $res = $self->request(method => "GET", path => '/');
+
+    if (($res->{version}{number} ge '6') && $index && exists($args{type}) && !exists($args{id})) {
+        # https://www.elastic.co/guide/en/elasticsearch/reference/6.0/indices-types-exists.html
+        my $path = '/' . $index . '/_mappings/' . $args{type};
+        ($status,$res) = $self->request(method => "GET", path => $path);
+    } else {
+        ($status,$res) = $self->request(method => "HEAD", %args);
+    }
+
     return ($status,'2' eq substr($status,0,1));
 }
 
