@@ -31,7 +31,10 @@ before_script:
   - curl http://localhost:9200/
 
 script:
-  minil build && perl ./Build.PL && ./Build build && cover -test -report coveralls
+  - minil build
+  - perl ./Build.PL
+  - ./Build build
+  - cover -test -report coveralls
 
 notifications:
   irc:
