@@ -21,8 +21,12 @@ sub _build_hijk_request_args {
         host   => $args->{host}   || 'localhost',
         port   => $args->{port}   || '9200',
         path   => $path,
+        head   => [
+            'Content-Type' => 'application/json',
+            ( (exists $args->{head}) ? (@{$args->{head}}) : ()),
+        ],
         $qs?( query_string => $qs) :(),
-        (map { (exists $args->{$_})?( $_ => $args->{$_} ) :() } qw(connect_timeout read_timeout head body socket_cache on_connect)),
+        (map { (exists $args->{$_})?( $_ => $args->{$_} ) :() } qw(connect_timeout read_timeout body socket_cache on_connect)),
     }
 }
 
