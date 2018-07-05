@@ -20,12 +20,12 @@ my $es = Elastijk->new(
 
 $res = $es->get(path => '/');
 my $es_server_version = $res->{version}{number};
-my $es_version_6_or_newer = ($es_server_version ge '6.0.0');
+my $es_version_5_or_newer = ($es_server_version ge '5.0.0');
 
 $es->{index} = $test_index_name;
 
 my $Str = { type => "string" };
-if ($es_version_6_or_newer) {
+if ($es_version_5_or_newer) {
     $Str = { type => 'text' };
 }
 
@@ -72,7 +72,7 @@ subtest "index 2 documents" => sub {
         my $source = $sources->[$i];
         my ($action, $res2) = (%{$res->{items}[$i]});
 
-        if ($es_version_6_or_newer) {
+        if ($es_version_5_or_newer) {
             is $action, 'index';
         } else {
             is $action, 'create';
@@ -151,7 +151,7 @@ subtest "index 2 documents with the value of 'type' attribute in the object." =>
         my $source = $sources->[$i];
         my ($action, $res2) = (%{$res->{items}[$i]});
 
-        if ($es_version_6_or_newer) {
+        if ($es_version_5_or_newer) {
             is $action, 'index';
         } else {
             is $action, 'create';
