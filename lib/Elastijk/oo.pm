@@ -67,7 +67,7 @@ sub exists {
     my ($status,$res);
     $res = $self->request(method => "GET", path => '/');
 
-    if (($res->{version}{number} ge '6') && $index && exists($args{type}) && !exists($args{id})) {
+    if (($res->{version}{number} ge '5') && $index && exists($args{type}) && !exists($args{id})) {
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.0/indices-types-exists.html
         my $path = '/' . $index . '/_mappings/' . $args{type};
         ($status,$res) = $self->request(method => "GET", path => $path);
