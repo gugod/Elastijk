@@ -15,7 +15,7 @@ sub new {
 
 sub __fleshen_request_args {
     my ($self, $args) = @_;
-    $args->{$_} ||= $self->{$_} for grep { exists $self->{$_} } qw(host port index type head socket_cache on_connect connect_timeout read_timeout);
+    $args->{$_} ||= $self->{$_} for grep { defined $self->{$_} } qw(host port index type head socket_cache on_connect connect_timeout read_timeout);
 }
 
 sub request {
@@ -65,12 +65,18 @@ sub exists {
     my $index = exists($args{index}) ? $args{index} : $self->{index};
 
     my ($status,$res);
-    $res = $self->request(method => "GET", path => '/');
 
-    if (($res->{version}{number} ge '5') && $index && exists($args{type}) && !exists($args{id})) {
+    if ($index && exists($args{type}) && !exists($args{id})) {
+        # Type exists API
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.0/indices-types-exists.html
-        my $path = '/' . $index . '/_mappings/' . $args{type};
-        ($status,$res) = $self->request(method => "GET", path => $path);
+
+        $res = $self->request( method => 'GET', path => '/', index => undef );
+        if ( ($res->{version}{number} || '') ge '5') {
+            my $path = '/' . $index . '/_mappings/' . $args{type};
+            ($status,$res) = $self->request(method => "GET", path => $path);
+        } else {
+            ($status,$res) = $self->request(method => "HEAD", %args);
+        }
     } else {
         ($status,$res) = $self->request(method => "HEAD", %args);
     }
