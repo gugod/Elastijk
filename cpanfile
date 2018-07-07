@@ -5,7 +5,6 @@ requires 'JSON', '2.59';
 on test => sub {
     requires 'Test::More', 0.90;
     requires 'Test2::V0';
-    requires 'Test2::Harness';
 };
 
 on develop => sub {
