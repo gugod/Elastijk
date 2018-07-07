@@ -280,15 +280,18 @@ to check the existence of different things:
     type:     index => "foo", type => "bar"
     index:    index => "foo"
 
-=head2 scan_scroll( ..., on_response => sub {} )
+=head2 search_scroll( ..., on_response => sub {} )
 
-A way to perform L<scan and scroll|https://www.elastic.co/guide/guide/en/elasticsearch/guide/current/scan-scroll.html>.
+This method helps using the
+L<scroll|https://www.elastic.co/guide/en/elasticsearch/reference/2.1/search-request-scroll.html> URI
+parameter of the search API. In essense, a initial search request with an extra parameter named
+scroll is sent, and subsequent special requests is than sent to page through the entire resultset.
 
-The boilerplate to use it is something like:
+The boilerplate to use this method is something like this:
 
-    $es->scan_scroll(
+    $es->search_scroll(
         index => "tweet",
-        body => { query => { match_all => {} }, size => 1000 },
+        body => { query => { match_all => {} } },
         on_response => sub {
             my ($status,$res) = @_;
             for my $hit (@{ $res->{hits}{hits} }) {
@@ -297,11 +300,13 @@ The boilerplate to use it is something like:
         }
     );
 
-The "search_type" is forced to be "scan" in this method.
-
 The very last value to the C<on_response> key is a callback subroutine that is
 called after each HTTP request. The arguments are HTTP status code and response
 body hash just like other methods.
+
+Note: this method was called L<scan_scroll>, but the "scan" search type was removed at Elasticsearch
+2.1.0 and the method name makes little sense. The 'scan_scroll' method still exists and useful
+with Elasticsearch pre-2.1.0, and it will be removed in a distanced future.
 
 =head2 bulk( ..., body => ArrayRef[ HashRef ], ... )
 
