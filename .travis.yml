@@ -27,12 +27,11 @@ before_script:
   - source ~/travis-perl-helpers/init
   - build-perl
   - perl -V
-  - cpanm -n Devel::Cover::Report::Coveralls
-  - curl http://localhost:9200/
+  - cpanm -n Devel::Cover::Report::Coveralls Test2::Harness
+  - cpanm --installdeps .
 
 script:
-  - cpanm Test2::Harness
-  - cpanm --installdeps .
+  - curl http://localhost:9200/
   - PERL5OPT=-MDevel::Cover yath test && cover -report coveralls
 
 notifications:
