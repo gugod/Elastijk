@@ -31,8 +31,9 @@ before_script:
   - curl http://localhost:9200/
 
 script:
+  - cpanm Test2::Harness
   - cpanm --installdeps .
-  - PERL5OPT=-MDevel::Cover prove -Ilib -r t && cover -report coveralls
+  - PERL5OPT=-MDevel::Cover yath test && cover -report coveralls
 
 notifications:
   irc:
