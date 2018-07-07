@@ -76,7 +76,7 @@ Elastijk - A specialized Elasticsearch client.
         type => "article",
         command => "_search",
 
-        uri_param => { search_type => "dfs_query_then_fetch" }
+        uri_param => { search_type => "dfs_query_then_fetch" },
         body => {
             query => { match => { "body" => "cpan" } }
         }
@@ -319,13 +319,7 @@ as a whole, but just a naive concatenation of multiple JSON documents.
 
 =head1 AUTHORS
 
-=over 4
-
-=item Kang-min Liu <gugod@gugod.org>
-
-=item Borislav Nikolov <jack@sofialondonmoskva.com>
-
-=back
+Kang-min Liu <gugod@gugod.org> and Borislav Nikolov <jack@sofialondonmoskva.com>
 
 =head1 COPYRIGHT
 
