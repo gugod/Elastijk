@@ -32,7 +32,7 @@ before_script:
 
 script:
   - cpanm --installdeps .
-  - cover -test -report coveralls
+  - PERL5OPT=-MDevel::Cover prove -Ilib -r t && cover -report coveralls
 
 notifications:
   irc:
