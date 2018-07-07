@@ -27,13 +27,11 @@ before_script:
   - source ~/travis-perl-helpers/init
   - build-perl
   - perl -V
-  - cpanm -n Minilla Devel::Cover::Report::Coveralls
+  - cpanm -n Devel::Cover::Report::Coveralls
   - curl http://localhost:9200/
 
 script:
-  - minil build
-  - perl ./Build.PL
-  - ./Build build
+  - cpanm --installdeps .
   - cover -test -report coveralls
 
 notifications:
