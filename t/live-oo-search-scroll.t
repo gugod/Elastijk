@@ -13,8 +13,8 @@ my $test_index_name = "test_index_$$".rand();
 my $es = Elastijk->new(host => 'localhost', port => '9200', index => $test_index_name );
 
 my $res = $es->get(path => "/");
-if ($res->{version}{number} ge '2.1.0') {
-    plan skip_all => "scan_scroll does not make sense with Elasticsearch 2.1.0 or latter";
+if ($res->{version}{number} lt '2.1.0') {
+    plan skip_all => "scan_scroll does not make sense with Elasticsearch older than 2.1.0";
     exit;
 }
 
@@ -42,10 +42,10 @@ $es->post(command => "_refresh");
 sleep 2; # wait for refresh.
 is $es->count(), 500, "count 500 documents";
 
-## finally, testing scan_scroll
+## finally, testing search_scroll
 my $count_callback = 0;
 my $count = 0;
-$es->scan_scroll(
+$es->search_scroll(
     body => { size => 100, query => { match_all => {} } },
     on_response => sub {
         my ($status, $res) = @_;

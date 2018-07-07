@@ -133,4 +133,35 @@ sub scan_scroll {
     }
 }
 
+sub search_scroll {
+    my ($self, %args) = @_;
+    my $on_response_callback = delete $args{on_response};
+
+    my %uri_param = %{ delete($args{uri_param}) || {} };
+    $uri_param{scroll} ||= "10m";
+    my $scroll_id;
+    my ($status, $res) = $self->post(%args, command => "_search", uri_param => \%uri_param);
+    if (substr($status,0,1) ne '2') {
+        return;
+    }
+
+    my $r = $on_response_callback->($status, $res);
+    return if defined($r) && !$r;
+
+    while (1) {
+        $scroll_id = $res->{_scroll_id};
+        ($status,$res) = $self->post(
+            path => "/_search/scroll",
+            body => { scroll => $uri_param{scroll}, scroll_id => $scroll_id }
+        );
+        if (substr($status,0,1) eq '2' && @{$res->{hits}{hits}} > 0) {
+            my $r = $on_response_callback->($status, $res);
+            last if defined($r) && !$r;
+            $scroll_id = $res->{_scroll_id};
+        } else {
+            last;
+        }
+    }
+}
+
 1;
